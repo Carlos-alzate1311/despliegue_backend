@@ -3,16 +3,34 @@ const cors = require('cors');
 const dbconnect = require("./config");
 const app = express();
 
+// Middleware
 app.use(express.json());
-app.use(cors({origin:'*'}))
-app.use('/api/usuarios',require('./routes/usuario.routes'));
-app.use('/api/empleados',require('./routes/empleado.routes'));
+app.use(cors({ origin: '*' }));
+
+// Rutas
+app.use('/api/usuarios', require('./routes/usuario.routes'));
+app.use('/api/empleados', require('./routes/empleado.routes'));
+
+// Ruta raíz
+app.get('/', (req, res) => {
+    res.send('API funcionando correctamente');
+});
+
+// Conexión a la base de datos
+dbconnect();
+
+// Manejo de errores (opcional)
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Algo salió mal!');
+});
+
+// Iniciar el servidor
 const PORT = process.env.PORT || 3005; // Deja 3005 como valor predeterminado para pruebas locales
 app.listen(PORT, () => {
     console.log(`El servidor está en el puerto ${PORT}`);
 });
 
-dbconnect();  
 
 
 
